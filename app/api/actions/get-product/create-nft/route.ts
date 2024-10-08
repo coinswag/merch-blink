@@ -15,8 +15,13 @@ import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
 // create the standard headers for this route (including CORS)
 const headers = createActionHeaders();
 
-const connection = new Connection(process.env.SOLANA_RPC! || clusterApiUrl('mainnet-beta'));
-const umi = createUmi(process.env.SOLANA_RPC!).use(mplBubblegum());
+const connection = new Connection(
+  `https://devnet.helius-rpc.com/?api-key=${process.env.SOLANA_RPC!}`,
+  'confirmed'
+);
+const umi = createUmi(`https://devnet.helius-rpc.com/?api-key=${process.env.SOLANA_RPC!}`).use(
+  mplBubblegum()
+);
 /**
  * since this endpoint is only meant to handle the callback request
  * for the action chaining, it does not accept or process GET requests
