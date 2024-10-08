@@ -151,11 +151,11 @@ export async function POST(req: NextRequest) {
     const payload = await createPostResponse({
       fields: {
         transaction,
-        message: `${name} merch purchased for ${price} USDC`,
+        message: `${merch.name} merch purchased for ${merch.price} USDC`,
         links: {
           next: {
             type: 'post',
-            href: `/api/actions/get-product/merch-sold?id=${`${id}`}`
+            href: `/api/actions/get-product/merch-sold?id=${id}`
           }
         }
       }
