@@ -97,8 +97,10 @@ export async function POST(req: NextRequest) {
       throw new Error('price is required');
     }
 
-    const connection = new Connection(process.env.SOLANA_RPC!, 'confirmed');
-
+    const connection = new Connection(
+      `https://devnet.helius-rpc.com/?api-key=${process.env.SOLANA_RPC!}`,
+      'confirmed'
+    );
     // Get the associated token addresses
     const fromTokenAddress = await getAssociatedTokenAddress(USDC_TOKEN_ADDRESS, account);
     const toTokenAddress = await getAssociatedTokenAddress(USDC_TOKEN_ADDRESS, RECIPIENT_ADDRESS);
