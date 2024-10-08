@@ -31,59 +31,36 @@ const client = new BlinksightsClient(process.env.BLINKSIGHTS_API_KEY!);
 
 const headers = createActionHeaders();
 
-const SEND_TOKEN_ADDRESS = new PublicKey('SENDdRQtYMWaQrBroBrJ2Q53fgVuq95CV9UPGEvpCxa');
+const USDC_TOKEN_ADDRESS = new PublicKey('4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU');
 const RECIPIENT_ADDRESS = new PublicKey('6kexz7VwA5J895tdWaDP6b4S9okQez1Att6E2jzWLXMk');
 
 async function makeGetRequest(endpoint: string, queryParams: Record<string, string>) {
   const url = new URL(endpoint);
-  Object.entries(queryParams).forEach(([key, value]) => url.searchParams.append(key, value));
   const response = await fetch(url.toString());
-  return response.json();
+  const data = await response.json();
+  return data.data;
 }
 
 export async function GET(req: NextRequest) {
   const queryParams = {
     query: req.url.split('=')[1]
   };
-  console.log(queryParams.query);
-  const merchDetails = await makeGetRequest(
-    'https://fortunate-emotion-production.up.railway.app/api/v1/merch',
+  const merch = await makeGetRequest(
+    `https://fortunate-emotion-production.up.railway.app/api/v1/merch?id=${queryParams.query}`,
     queryParams
   );
-  console.log(merchDetails);
 
   let response = await client.createActionGetResponseV1(req.url, {
     type: 'action',
-    icon: `https://res.cloudinary.com/dbuaprzc0/image/upload/f_auto,q_auto/xav9x6oqqsxmn5w9rqhg`,
-    title: 'Geneva',
-    description: `Generate an Image pased on a prompt 
-  10 $SEND to generate a normal image
-  20 $SEND to generate an ultra-realistic image`,
-    label: 'Generate Image',
+    icon: merch.images[0] || 'Product',
+    title: merch.name,
+    description: merch.description,
+    label: 'Buy Merch',
     links: {
       actions: [
         {
-          label: 'Pay in $SEND',
-          href: '/api/actions/glitch-my-pfp',
-          parameters: [
-            {
-              name: 'prompt',
-              label: 'Go wild..',
-              type: 'textarea'
-            },
-            {
-              name: 'isUltra',
-              label: '',
-              type: 'checkbox',
-              options: [
-                {
-                  label: 'Ultra-Realistic Mode',
-                  value: 'ultra',
-                  selected: false
-                }
-              ]
-            }
-          ]
+          label: `Pay ${merch.price} USDC`,
+          href: `/api/actions/get-product?price=${merch.price}`
         }
       ]
     }
@@ -113,24 +90,18 @@ export async function POST(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     console.log(searchParams);
-    const prompt = body?.data?.prompt || searchParams.get('prompt');
-    console.log(prompt);
+    const price = searchParams.get('price');
+    console.log(price);
 
-    if (!prompt) {
-      throw new Error('Prompt is required');
-    }
-    let ultraman = body?.data?.isUltra || searchParams.get('isUltra')?.split('');
-    let isUltra: boolean = false;
-
-    if (ultraman[0] === 'ultra') {
-      isUltra = true;
+    if (!price) {
+      throw new Error('price is required');
     }
 
     const connection = new Connection(process.env.SOLANA_RPC!, 'confirmed');
 
     // Get the associated token addresses
-    const fromTokenAddress = await getAssociatedTokenAddress(SEND_TOKEN_ADDRESS, account);
-    const toTokenAddress = await getAssociatedTokenAddress(SEND_TOKEN_ADDRESS, RECIPIENT_ADDRESS);
+    const fromTokenAddress = await getAssociatedTokenAddress(USDC_TOKEN_ADDRESS, account);
+    const toTokenAddress = await getAssociatedTokenAddress(USDC_TOKEN_ADDRESS, RECIPIENT_ADDRESS);
     console.log(fromTokenAddress, toTokenAddress);
 
     const transaction = new Transaction();
@@ -144,19 +115,19 @@ export async function POST(req: NextRequest) {
           account,
           toTokenAddress,
           RECIPIENT_ADDRESS,
-          SEND_TOKEN_ADDRESS
+          USDC_TOKEN_ADDRESS
         )
       );
     }
 
     // Add transfer instruction
-    const imageGenerationCost = isUltra ? 20000000 : 10000000; // calculate cost based on isUltra
+    const merchCost = 10000000; // calculate cost based on isUltra
     transaction.add(
       createTransferInstruction(
         fromTokenAddress,
         toTokenAddress,
         account,
-        imageGenerationCost, // 10 SEND tokens (assuming 9 decimals)
+        merchCost, // 10 SEND tokens (assuming 9 decimals)
         [],
         TOKEN_PROGRAM_ID
       )
