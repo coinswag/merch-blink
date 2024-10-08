@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
       actions: [
         {
           label: `Pay ${merch.price} USDC`,
-          href: `/api/actions/get-product?name=${merch.name}&price=${merch.price}&id=${merch._id}`
+          href: `/api/actions/get-product?id=${merch._id}`
         }
       ]
     }
@@ -90,21 +90,15 @@ export async function POST(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     console.log(new URL(req.url));
     console.log(req.url);
-    let price: number | null = searchParams.get('price') ? Number(searchParams.get('price')) : null;
     let id: string | null = searchParams.get('id') ? searchParams.get('id') : null;
-    let name: string | null = searchParams.get('name') ? searchParams.get('name') : null;
-    console.log(price, id, name);
+    console.log(id);
 
-    if (!price) {
-      throw new Error('price is required');
-    }
     if (!id) {
       throw new Error('id is required');
     }
-    if (!name) {
-      throw new Error('name is required');
-    }
-
+    const merch = await makeGetRequest(
+      `https://fortunate-emotion-production.up.railway.app/api/v1/merch?id=${id}`
+    );
     const connection = new Connection(
       `https://devnet.helius-rpc.com/?api-key=${process.env.SOLANA_RPC!}`,
       'confirmed'
@@ -117,6 +111,7 @@ export async function POST(req: NextRequest) {
     const transaction = new Transaction();
 
     // Check if the recipient's token account exists, if not, create it
+    let price = parseInt(merch.price);
     const toTokenAccount = await connection.getAccountInfo(toTokenAddress);
     if (toTokenAccount && toTokenAccount.lamports < BigInt(price * 1000000)) {
       price = 5;
@@ -132,9 +127,8 @@ export async function POST(req: NextRequest) {
         )
       );
     }
-
     // Add transfer instruction
-    const merchCost = 1000000 * price;
+    const merchCost = 1000000 * Number(price);
     transaction.add(
       createTransferInstruction(
         fromTokenAddress,
