@@ -89,6 +89,7 @@ export async function POST(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     console.log(new URL(req.url));
+    console.log(req.url);
     let price: number | null = searchParams.get('price') ? Number(searchParams.get('price')) : null;
     let id: string | null = searchParams.get('id') ? searchParams.get('id') : null;
     let name: string | null = searchParams.get('name') ? searchParams.get('name') : null;
