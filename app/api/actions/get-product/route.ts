@@ -34,7 +34,7 @@ const headers = createActionHeaders();
 const USDC_TOKEN_ADDRESS = new PublicKey('4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU');
 const RECIPIENT_ADDRESS = new PublicKey('6kexz7VwA5J895tdWaDP6b4S9okQez1Att6E2jzWLXMk');
 
-async function makeGetRequest(endpoint: string, queryParams: Record<string, string>) {
+async function makeGetRequest(endpoint: string) {
   const url = new URL(endpoint);
   const response = await fetch(url.toString());
   const data = await response.json();
@@ -46,8 +46,7 @@ export async function GET(req: NextRequest) {
     query: req.url.split('=')[1]
   };
   const merch = await makeGetRequest(
-    `https://fortunate-emotion-production.up.railway.app/api/v1/merch?id=${queryParams.query}`,
-    queryParams
+    `https://fortunate-emotion-production.up.railway.app/api/v1/merch?id=${queryParams.query}`
   );
 
   let response = await client.createActionGetResponseV1(req.url, {
@@ -60,7 +59,7 @@ export async function GET(req: NextRequest) {
       actions: [
         {
           label: `Pay ${merch.price} USDC`,
-          href: `/api/actions/get-product?price=${merch.price}`
+          href: `/api/actions/get-product?name=${merch.name}price=${merch.price}&id=${merch._id}`
         }
       ]
     }
@@ -90,11 +89,19 @@ export async function POST(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     console.log(searchParams);
-    const price = searchParams.get('price');
-    console.log(price);
+    let price: number | null = searchParams.get('price') ? Number(searchParams.get('price')) : null;
+    let id: string | null = searchParams.get('id') ? searchParams.get('id') : null;
+    let name: string | null = searchParams.get('name') ? searchParams.get('name') : null;
+    console.log(price, id, name);
 
     if (!price) {
       throw new Error('price is required');
+    }
+    if (!id) {
+      throw new Error('id is required');
+    }
+    if (!name) {
+      throw new Error('name is required');
     }
 
     const connection = new Connection(
@@ -110,6 +117,9 @@ export async function POST(req: NextRequest) {
 
     // Check if the recipient's token account exists, if not, create it
     const toTokenAccount = await connection.getAccountInfo(toTokenAddress);
+    if (toTokenAccount && toTokenAccount.lamports < BigInt(price * 1000000)) {
+      price = 5;
+    }
     console.log(toTokenAccount);
     if (!toTokenAccount) {
       transaction.add(
@@ -123,13 +133,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Add transfer instruction
-    const merchCost = 10000000; // calculate cost based on isUltra
+    const merchCost = 1000000 * price;
     transaction.add(
       createTransferInstruction(
         fromTokenAddress,
         toTokenAddress,
         account,
-        merchCost, // 10 SEND tokens (assuming 9 decimals)
+        merchCost,
         [],
         TOKEN_PROGRAM_ID
       )
@@ -146,11 +156,11 @@ export async function POST(req: NextRequest) {
     const payload = await createPostResponse({
       fields: {
         transaction,
-        message: `Image generated successfully`,
+        message: `${name} merch purchased for ${price} USDC`,
         links: {
           next: {
             type: 'post',
-            href: `/api/actions/glitch-my-pfp/create-nft?url=${`https://google.com`}`
+            href: `/api/actions/get-product/merch-sold?id=${`${id}`}`
           }
         }
       }

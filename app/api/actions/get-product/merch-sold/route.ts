@@ -61,13 +61,22 @@ async function confirmTransaction(
 
   throw new Error('Transaction confirmation timeout');
 }
+async function makeGetRequest(endpoint: string) {
+  const url = new URL(endpoint);
+  const response = await fetch(url.toString());
+  const data = await response.json();
+  return data.data;
+}
 
 export const POST = async (req: Request) => {
   try {
     const { searchParams } = new URL(req.url);
-    const imageUrl = searchParams.get('url');
-    console.log('imageUrl:', imageUrl);
+    const merchId = searchParams.get('id');
+    console.log('merchId:', merchId);
 
+    const merch = await makeGetRequest(
+      `https://fortunate-emotion-production.up.railway.app/api/v1/merch?id=${merchId}`
+    );
     /**
      * we can type the `body.data` to what fields we expect from the GET response above
      */
@@ -101,10 +110,10 @@ export const POST = async (req: Request) => {
 
     const payload: CompletedAction = {
       type: 'completed',
-      title: 'Geneva',
-      icon: new URL(imageUrl!).toString(),
-      label: ``,
-      description: `Successfully generated image🎉🔥 Here is a link to the image: ${imageUrl}`
+      title: 'Coinswag',
+      icon: new URL(merch.images[0]).toString(),
+      label: merch.name,
+      description: `Successfully paid for ${merch.name}. Please continue with this link: https://degods.coinswag.shop/checkout`
     };
 
     return Response.json(payload, {
