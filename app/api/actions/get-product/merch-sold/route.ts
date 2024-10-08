@@ -112,7 +112,7 @@ export const POST = async (req: Request) => {
       type: 'completed',
       title: 'Coinswag',
       icon: new URL(merch.images[0]).toString(),
-      label: merch.name,
+      label: `Paid ${merch.price} USDC`,
       description: `Successfully paid for ${merch.name}. Please continue with this link: https://degods.coinswag.shop/checkout`
     };
 
