@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
     }
 
     const connection = new Connection(
-      `https://devnet.helius-rpc.com/?api-key=1d33d108-520d-4e5c-998e-548383eb6665`,
+      `https://devnet.helius-rpc.com/?api-key=${process.env.SOLANA_RPC!}`,
       'confirmed'
     );
     // Get the associated token addresses
