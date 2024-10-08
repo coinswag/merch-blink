@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
       actions: [
         {
           label: `Pay ${merch.price} USDC`,
-          href: `/api/actions/get-product?name=${merch.name}price=${merch.price}&id=${merch._id}`
+          href: `/api/actions/get-product?name=${merch.name}&price=${merch.price}&id=${merch._id}`
         }
       ]
     }
