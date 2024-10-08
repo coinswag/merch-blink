@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
     await client.trackActionV2(account as unknown as string, req.url);
 
     const { searchParams } = new URL(req.url);
-    console.log(searchParams);
+    console.log(new URL(req.url));
     let price: number | null = searchParams.get('price') ? Number(searchParams.get('price')) : null;
     let id: string | null = searchParams.get('id') ? searchParams.get('id') : null;
     let name: string | null = searchParams.get('name') ? searchParams.get('name') : null;
