@@ -1,4 +1,3 @@
-import * as fal from '@fal-ai/serverless-client';
 import { NextRequest, NextResponse } from 'next/server';
 import { BlinksightsClient } from 'blinksights-sdk';
 import {
@@ -31,8 +30,14 @@ import {
   mplBubblegum,
   parseLeafFromMintV1Transaction
 } from '@metaplex-foundation/mpl-bubblegum';
-import { none, publicKey } from '@metaplex-foundation/umi';
-
+import {
+  createSignerFromKeypair,
+  keypairIdentity,
+  none,
+  publicKey,
+  signerIdentity
+} from '@metaplex-foundation/umi';
+import bs58 from 'bs58';
 const client = new BlinksightsClient(process.env.BLINKSIGHTS_API_KEY!);
 
 const headers = createActionHeaders();
@@ -43,6 +48,16 @@ const RECIPIENT_ADDRESS = new PublicKey('6kexz7VwA5J895tdWaDP6b4S9okQez1Att6E2jz
 const umi = createUmi(`https://devnet.helius-rpc.com/?api-key=${process.env.SOLANA_RPC!}`).use(
   mplBubblegum()
 );
+// Decode the Base58 private key and create a keypair
+const privateKeyBytes = bs58.decode(process.env.METAPLEX_SIGNER!);
+const keypair = Keypair.fromSecretKey(privateKeyBytes);
+const walletKeypair = umi.eddsa.createKeypairFromSecretKey(keypair.secretKey);
+console.log(walletKeypair.publicKey);
+const payer = createSignerFromKeypair(umi, walletKeypair);
+console.log(payer.publicKey);
+umi.use(keypairIdentity(payer));
+
+// Create a signer from the keypair and set it as the identity for Um
 async function makeGetRequest(endpoint: string) {
   const url = new URL(endpoint);
   const response = await fetch(url.toString());
