@@ -47,7 +47,7 @@ const RECIPIENT_ADDRESS = new PublicKey('6kexz7VwA5J895tdWaDP6b4S9okQez1Att6E2jz
 
 const umi = createUmi(`https://devnet.helius-rpc.com/?api-key=${process.env.SOLANA_RPC!}`).use(
   mplBubblegum()
-)
+);
 // Decode the Base58 private key and create a keypair
 const privateKeyBytes = bs58.decode(process.env.METAPLEX_SIGNER!);
 const keypair = Keypair.fromSecretKey(privateKeyBytes);
@@ -154,7 +154,7 @@ export async function POST(req: NextRequest) {
     const fromTokenAddress = await getAssociatedTokenAddress(USDC_TOKEN_ADDRESS, account);
     const toTokenAddress = await getAssociatedTokenAddress(USDC_TOKEN_ADDRESS, RECIPIENT_ADDRESS);
     console.log(fromTokenAddress, toTokenAddress);
-    const imageUrl = await generateCnft(body.account, merch.images[0], merch.name);
+    const imageUrl = await generateCnft(new PublicKey(account), merch.images[0], merch.name);
 
     const transaction = new Transaction();
 
