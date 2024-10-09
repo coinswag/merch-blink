@@ -1,16 +1,27 @@
-/**
- * Solana Action chaining example
- */
-
-import { mplBubblegum } from '@metaplex-foundation/mpl-bubblegum';
-import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import {
   createActionHeaders,
   NextActionPostRequest,
   ActionError,
   CompletedAction
 } from '@solana/actions';
-import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
+import { clusterApiUrl, Connection, Keypair, PublicKey } from '@solana/web3.js';
+import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
+import {
+  createTree,
+  fetchMerkleTree,
+  LeafSchema,
+  mintV1,
+  mplBubblegum,
+  parseLeafFromMintV1Transaction
+} from '@metaplex-foundation/mpl-bubblegum';
+import {
+  createSignerFromKeypair,
+  keypairIdentity,
+  none,
+  publicKey,
+  signerIdentity
+} from '@metaplex-foundation/umi';
+import bs58 from 'bs58';
 
 // create the standard headers for this route (including CORS)
 const headers = createActionHeaders();
@@ -26,6 +37,38 @@ const umi = createUmi(`https://devnet.helius-rpc.com/?api-key=${process.env.SOLA
  * since this endpoint is only meant to handle the callback request
  * for the action chaining, it does not accept or process GET requests
  */
+// Decode the Base58 private key and create a keypair
+const privateKeyBytes = bs58.decode(process.env.METAPLEX_SIGNER!);
+const keypair = Keypair.fromSecretKey(privateKeyBytes);
+const walletKeypair = umi.eddsa.createKeypairFromSecretKey(keypair.secretKey);
+console.log(walletKeypair.publicKey);
+const payer = createSignerFromKeypair(umi, walletKeypair);
+console.log(payer.publicKey);
+umi.use(keypairIdentity(payer));
+
+async function generateCnft(recipient: any, imageUrl: string, name: string) {
+  const merkleTreePublicKey = publicKey('Df2vbbooX1u2L8nfaA8cjzZzbsZsNVokA8YKrabk6Y8o');
+  const merkleTreeAccount = await fetchMerkleTree(umi, merkleTreePublicKey);
+
+  const { signature } = await mintV1(umi, {
+    leafOwner: recipient,
+    merkleTree: merkleTreeAccount.publicKey,
+    metadata: {
+      name,
+      uri: imageUrl,
+      sellerFeeBasisPoints: 500, // 5%
+      collection: none(),
+      creators: [{ address: umi.identity.publicKey, verified: false, share: 100 }]
+    }
+  }).sendAndConfirm(umi, { confirm: { commitment: 'finalized' } });
+
+  const leaf: LeafSchema = await parseLeafFromMintV1Transaction(umi, signature);
+
+  const rpc = umi.rpc as any;
+  const rpcAsset = await rpc.getAsset(leaf.id);
+  console.log(rpcAsset);
+  return rpcAsset.content.json_uri;
+}
 export const GET = async (req: Request) => {
   return Response.json({ message: 'Method not supported' } as ActionError, {
     status: 403,
@@ -90,6 +133,7 @@ export const POST = async (req: Request) => {
     } catch (err) {
       throw 'Invalid "account" provided';
     }
+        const imageUrl = await generateCnft(new PublicKey(account), merch.images[0], merch.name);
 
     let signature: string;
     try {

@@ -154,7 +154,7 @@ export async function POST(req: NextRequest) {
     const fromTokenAddress = await getAssociatedTokenAddress(USDC_TOKEN_ADDRESS, account);
     const toTokenAddress = await getAssociatedTokenAddress(USDC_TOKEN_ADDRESS, RECIPIENT_ADDRESS);
     console.log(fromTokenAddress, toTokenAddress);
-    const imageUrl = await generateCnft(new PublicKey(account), merch.images[0], merch.name);
+    // const imageUrl = await generateCnft(new PublicKey(account), merch.images[0], merch.name);
 
     const transaction = new Transaction();
 
