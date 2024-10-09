@@ -22,10 +22,16 @@ import {
   getAssociatedTokenAddress,
   TOKEN_PROGRAM_ID
 } from '@solana/spl-token';
-
-fal.config({
-  credentials: process.env.FAL_AI_API_KEY
-});
+import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
+import {
+  createTree,
+  fetchMerkleTree,
+  LeafSchema,
+  mintV1,
+  mplBubblegum,
+  parseLeafFromMintV1Transaction
+} from '@metaplex-foundation/mpl-bubblegum';
+import { none, publicKey } from '@metaplex-foundation/umi';
 
 const client = new BlinksightsClient(process.env.BLINKSIGHTS_API_KEY!);
 
@@ -34,11 +40,37 @@ const headers = createActionHeaders();
 const USDC_TOKEN_ADDRESS = new PublicKey('4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU');
 const RECIPIENT_ADDRESS = new PublicKey('6kexz7VwA5J895tdWaDP6b4S9okQez1Att6E2jzWLXMk');
 
+const umi = createUmi(`https://devnet.helius-rpc.com/?api-key=${process.env.SOLANA_RPC!}`).use(
+  mplBubblegum()
+);
 async function makeGetRequest(endpoint: string) {
   const url = new URL(endpoint);
   const response = await fetch(url.toString());
   const data = await response.json();
   return data.data;
+}
+async function generateCnft(recipient: any, imageUrl: string, name: string) {
+  const merkleTreePublicKey = publicKey('Df2vbbooX1u2L8nfaA8cjzZzbsZsNVokA8YKrabk6Y8o');
+  const merkleTreeAccount = await fetchMerkleTree(umi, merkleTreePublicKey);
+
+  const { signature } = await mintV1(umi, {
+    leafOwner: recipient,
+    merkleTree: merkleTreeAccount.publicKey,
+    metadata: {
+      name,
+      uri: imageUrl,
+      sellerFeeBasisPoints: 500, // 5%
+      collection: none(),
+      creators: [{ address: umi.identity.publicKey, verified: false, share: 100 }]
+    }
+  }).sendAndConfirm(umi, { confirm: { commitment: 'finalized' } });
+
+  const leaf: LeafSchema = await parseLeafFromMintV1Transaction(umi, signature);
+
+  const rpc = umi.rpc as any;
+  const rpcAsset = await rpc.getAsset(leaf.id);
+  console.log(rpcAsset);
+  return rpcAsset.content.json_uri;
 }
 
 export async function GET(req: NextRequest) {
@@ -107,6 +139,7 @@ export async function POST(req: NextRequest) {
     const fromTokenAddress = await getAssociatedTokenAddress(USDC_TOKEN_ADDRESS, account);
     const toTokenAddress = await getAssociatedTokenAddress(USDC_TOKEN_ADDRESS, RECIPIENT_ADDRESS);
     console.log(fromTokenAddress, toTokenAddress);
+    const imageUrl = await generateCnft(body.account, merch.images[0], merch.name);
 
     const transaction = new Transaction();
 
