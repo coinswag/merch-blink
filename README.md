@@ -14,17 +14,15 @@ Turn Your Ideas Into Custom Products, Sell Globally
 
 <hr />
 
-Here's a significantly shortened version:
-
-NFT artists and memecoin communities struggle to create merch shops due to high costs and technical barriers. Coinswag solves this by offering a Web3-native social commerce platform that enables:
+NFT artists, Creators and memecoin communities struggle to create merch shops due to high costs and technical barriers. Coinswag solves this by offering a Web3-native social commerce platform that enables:
 
 1. Easy creation of custom merch from NFTs and ideas
 2. Instant shop setup with no upfront costs
 3. Global sales with both crypto and fiat payments
 
-Key features include on-demand production, native crypto payments, and easy design tools. Our waitlist has already attracted over 100 signups, demonstrating strong market interest.
+Key features include on-demand production, native crypto payments, and easy design tools. Our waitlist has already attracted over 100 signups.
 
-Coinswag is revolutionizing how Web3 communities engage fans and monetize their brand through physical merchandise.
+Coinswag is revolutionizing how Artists and Communites engage fans and monetize their brand through physical merchandise.
 
 ## 📖 Protocol Architecture
 ```mermaid
