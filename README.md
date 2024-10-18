@@ -27,8 +27,7 @@ Key features include on-demand production, native crypto payments, and easy desi
 Coinswag is revolutionizing how Web3 communities engage fans and monetize their brand through physical merchandise.
 
 ## 📖 Protocol Architecture
-
-```
+```mermaid
 graph TD
     A[User logs in to Coinswag] --> B[Access Dashboard]
     B --> C[View store stats]
