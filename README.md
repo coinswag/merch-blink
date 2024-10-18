@@ -1,57 +1,89 @@
-# Coinswag: Turn Your Ideas Into Custom Products, Sell Globally
 
-## Description
 
-Coinswag is a social commerce platform where creators, nft artists and communities can turn their ideas into custom products and sell globally. Our platform allows creators, brands, and communities to transform their digital assets into physical merchandise, creating a seamless bridge between the digital and physical worlds.
+<div align="center">
 
-### Metaplex Integration
+[![logo](https://res.cloudinary.com/dbuaprzc0/image/upload/v1729260196/qptnjqdfdx9unwseqpqt.png)](https://www.coinswag.shop)
 
-Coinswag utilizes two key components of the Metaplex product suite:
+Turn Your Ideas Into Custom Products, Sell Globally
 
-1. **Digital Asset Standard (DAS) API**: We use the DAS API to fetch and interact with digital asset data on the Solana blockchain. This allows us to seamlessly integrate existing NFTs and digital assets into our merchandise creation process.
+<h3>
 
-2. **Bubblegum (Compressed NFTs)**: We leverage Bubblegum to create compressed NFTs that represent physical merchandise. This allows for cost-effective minting of large quantities of NFTs, each tied to a specific piece of merchandise.
+ | [Website](https://www.coinswag.com/) | [Demo Video](https://www.loom.com/share/f41bea255e3d4069b4860d143e40f8fd)
 
-## Key Features
+</h3>
 
-1. **NFT-to-Merch Conversion**: Users can import their existing NFTs or create new designs to be printed on physical merchandise.
+</div>
 
-2. **Blockchain-Verified Limited Editions**: Utilize compressed NFTs to create verifiable scarcity for exclusive merchandise items.
+<hr />
 
-3. **Token-Gated Access**: Implement access control for exclusive merchandise based on NFT ownership or token holdings.
+Here's a significantly shortened version:
 
-4. **On-Chain Rewards**: Integrate merchandise purchases with existing tokenomics, offering on-chain rewards for buyers.
+NFT artists and memecoin communities struggle to create merch shops due to high costs and technical barriers. Coinswag solves this by offering a Web3-native social commerce platform that enables:
 
-5. **Global Crypto Payments**: Accept both fiat and cryptocurrency payments, enabling truly global transactions.
+1. Easy creation of custom merch from NFTs and ideas
+2. Instant shop setup with no upfront costs
+3. Global sales with both crypto and fiat payments
 
-6. **Real-Time Analytics**: Track sales, engagement, and inventory using on-chain data.
+Key features include on-demand production, native crypto payments, and easy design tools. Our waitlist has already attracted over 100 signups, demonstrating strong market interest.
 
-7. **Automated Fulfillment**: Connect with a global network of print-on-demand services for seamless order fulfillment.
+Coinswag is revolutionizing how Web3 communities engage fans and monetize their brand through physical merchandise.
 
-## Technical Implementation
+## 📖 Protocol Architecture
+```mermaid
+graph TD
+    A[User connects wallet] --> B[Import or create design]
+    B --> C[Set up product details]
+    C --> D[Create new merchandise]
+    D --> E[Set pricing and editions]
+    E --> F[Choose token-gating options]
+    F --> G[Select reward incentives]
+    G --> H[Preview and publish product]
+    H --> I[Share product listing]
+    
+    D --> J[Mint compressed NFTs]
+    D --> K[Set up token-gated access]
+    D --> L[Configure on-chain rewards]
+    
+    subgraph "Merchandise Actions"
+        M[Import NFT design]
+        N[Create custom design]
+        O[Set up limited editions]
+        P[Configure token-gating]
+        Q[Set up on-chain rewards]
+    end
+    
+    subgraph "Reward Incentives"
+        R[Discount codes]
+        S[Exclusive access]
+        T[Airdrop tokens]
+        U[Loyalty points]
+        V[Referral rewards]
+    end
+    
+    F --> M
+    G --> R
+```
 
-### DAS API Integration
+## 🛠 Workflow
+1) User logs in to their Coinswag account.
+2) Access the dashboard to view store stats (profit, orders, recent sales).
+3) Create new merch by uploading logo/design and setting details.
+4) Choose from various merch types (hoodies, t-shirts, mugs, etc.).
+5) Manage orders and view customer information.
+6) Share merch listings as "blinks" for Twitter promotion.
+7) Customers can browse, customize (size, color), and purchase merch.
+8) Checkout process includes shipping details and payment via [Mercuryo](https://mercuryo.com).
 
-We use the Metaplex DAS API to:
-- Fetch NFT metadata for importing existing digital assets
-- Retrieve ownership information for token-gated access
-- Query asset data for creating limited edition merchandise
+## 🪛 Integration
 
-### Bubblegum (Compressed NFTs) Implementation
+[Metaplex DAS API](https://docs.metaplex.com/programs/token-metadata/overview) – Used to fetch and interact with digital asset data on the Solana blockchain.
 
-We utilize Bubblegum to:
-- Mint compressed NFTs representing physical merchandise
-- Create and manage limited edition collections
-- Implement efficient and cost-effective NFT operations
+[Metaplex Bubblegum](https://docs.metaplex.com/programs/compression/overview) - Utilized for creating and managing compressed NFTs representing physical merchandise.
 
-## Innovation and Impact
+[Mercuryo](https://mercuryo.io/) - Integrated for seamless crypto and fiat payment processing during checkout.
 
-Coinswag addresses critical challenges in the Web3 merchandise market:
+[Arweave](https://www.arweave.org/) - Used for permanent storage of product metadata and designs.
 
-1. **Eliminates Inventory Risk**: On-demand production reduces upfront costs and inventory management issues.
-2. **Global Reach**: Native crypto payments enable truly international transactions.
-3. **Verifiable Scarcity**: Blockchain-based limited editions create high-value, exclusive items.
-4. **Community Engagement**: Token-gated access and on-chain rewards strengthen community ties.
-5. **Seamless Integration**: Easy setup for creators to add gated rewards, loyalty programs, and referral marketing.
-
-By leveraging Solana's high-performance blockchain and Metaplex's robust tools, Coinswag is positioned to transform the $7.57 billion custom merchandise market, bridging the gap between digital communities and physical products in the Web3 era.
+## 🌐 Repo URLs
+- [Coinswag Frontend](https://github.com/coinswag/frontend)
+- [Coinswag Backend](https://github.com/coinswag/backend)
