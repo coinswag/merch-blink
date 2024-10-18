@@ -1,10 +1,10 @@
 # Coinswag: Turn Your Ideas Into Custom Products, Sell Globally
 
-## Project Description
+## Description
 
-Coinswag is a. Our platform allows creators, brands, and communities to transform their digital assets into physical merchandise, creating a seamless bridge between the digital and physical worlds.
+Coinswag is a social commerce platform where creators, nft artists and communities can turn their ideas into custom products and sell globally. Our platform allows creators, brands, and communities to transform their digital assets into physical merchandise, creating a seamless bridge between the digital and physical worlds.
 
-## Metaplex Integration
+### Metaplex Integration
 
 Coinswag utilizes two key components of the Metaplex product suite:
 
