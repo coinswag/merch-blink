@@ -1,5 +1,3 @@
-
-
 <div align="center">
 
 [![logo](https://res.cloudinary.com/dbuaprzc0/image/upload/v1729260196/qptnjqdfdx9unwseqpqt.png)](https://www.coinswag.shop)
@@ -8,7 +6,7 @@ Turn Your Ideas Into Custom Products, Sell Globally
 
 <h3>
 
- | [Website](https://www.coinswag.com/) | [Demo Video](https://www.loom.com/share/f41bea255e3d4069b4860d143e40f8fd)
+[Website](https://www.coinswag.com/) | [Demo Video](https://www.loom.com/share/f41bea255e3d4069b4860d143e40f8fd)
 
 </h3>
 
@@ -29,50 +27,64 @@ Key features include on-demand production, native crypto payments, and easy desi
 Coinswag is revolutionizing how Web3 communities engage fans and monetize their brand through physical merchandise.
 
 ## 📖 Protocol Architecture
-```mermaid
+
+```
 graph TD
-    A[User connects wallet] --> B[Import or create design]
-    B --> C[Set up product details]
-    C --> D[Create new merchandise]
-    D --> E[Set pricing and editions]
-    E --> F[Choose token-gating options]
-    F --> G[Select reward incentives]
-    G --> H[Preview and publish product]
-    H --> I[Share product listing]
-    
-    D --> J[Mint compressed NFTs]
-    D --> K[Set up token-gated access]
-    D --> L[Configure on-chain rewards]
-    
-    subgraph "Merchandise Actions"
-        M[Import NFT design]
-        N[Create custom design]
-        O[Set up limited editions]
-        P[Configure token-gating]
-        Q[Set up on-chain rewards]
+    A[User logs in to Coinswag] --> B[Access Dashboard]
+    B --> C[View store stats]
+    B --> D[Manage Merchandise]
+    B --> E[Handle Orders]
+    B --> F[View Customers]
+
+    D --> G[Create new merch]
+    G --> H[Upload logo/design]
+    G --> I[Set merch details]
+    G --> J[Choose merch type]
+
+    K[Customer browses store] --> L[Select merch]
+    L --> M[Customize size/color]
+    M --> N[Add to cart]
+    N --> O[Checkout]
+    O --> P[Enter shipping details]
+    P --> Q[Pay with Mercuryo]
+
+    D --> R[Share as blink on Twitter]
+
+    subgraph "Merchandise Types"
+        S[Hoodies]
+        T[T-shirts]
+        U[Mugs]
+        V[Wallpapers]
+        W[Other merch]
     end
-    
-    subgraph "Reward Incentives"
-        R[Discount codes]
-        S[Exclusive access]
-        T[Airdrop tokens]
-        U[Loyalty points]
-        V[Referral rewards]
+
+    subgraph "Dashboard Sections"
+        X[Store profit]
+        Y[Orders per month]
+        Z[Recent orders]
     end
-    
-    F --> M
-    G --> R
+
+    J --> S
+    J --> T
+    J --> U
+    J --> V
+    J --> W
+
+    C --> X
+    C --> Y
+    C --> Z
 ```
 
 ## 🛠 Workflow
-1) User logs in to their Coinswag account.
-2) Access the dashboard to view store stats (profit, orders, recent sales).
-3) Create new merch by uploading logo/design and setting details.
-4) Choose from various merch types (hoodies, t-shirts, mugs, etc.).
-5) Manage orders and view customer information.
-6) Share merch listings as "blinks" for Twitter promotion.
-7) Customers can browse, customize (size, color), and purchase merch.
-8) Checkout process includes shipping details and payment via [Mercuryo](https://mercuryo.com).
+
+1. User logs in to their Coinswag account.
+2. Access the dashboard to view store stats (profit, orders, recent sales).
+3. Create new merch by uploading logo/design and setting details.
+4. Choose from various merch types (hoodies, t-shirts, mugs, etc.).
+5. Manage orders and view customer information.
+6. Share merch listings as "blinks" for Twitter promotion.
+7. Customers can browse, customize (size, color), and purchase merch.
+8. Checkout process includes shipping details and payment via [Mercuryo](https://mercuryo.com).
 
 ## 🪛 Integration
 
@@ -85,5 +97,6 @@ graph TD
 [Arweave](https://www.arweave.org/) - Used for permanent storage of product metadata and designs.
 
 ## 🌐 Repo URLs
+
 - [Coinswag Frontend](https://github.com/coinswag/frontend)
 - [Coinswag Backend](https://github.com/coinswag/backend)
